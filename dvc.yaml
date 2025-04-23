@@ -1,0 +1,17 @@
+stages:
+  recommend:
+    cmd: poetry run python src/generate.py --prompt prompts/recommend.txt --inputs data/test_inputs.json --output outputs/recommend.json
+    deps:
+      - src/generate.py
+      - prompts/recommend.txt
+      - data/test_inputs.json
+    outs:
+      - outputs/recommend.json
+  evaluate:
+    cmd: poetry run python src/evaluate.py --pred outputs/recommend.json --ref data/test_inputs.json
+    deps:
+      - src/evaluate.py
+      - outputs/recommend.json
+      - data/test_inputs.json
+    metrics:
+      - outputs/metrics.json

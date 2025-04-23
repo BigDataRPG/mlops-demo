@@ -1,53 +1,80 @@
-# MLOps Demo Project
+# RPG Character Style Recommender — MLOps Demo
 
-This repository demonstrates MLOps (Machine Learning Operations) best practices for building, training, and deploying machine learning models.
+A prompt-driven LLM service that recommends RPG character classes, gear, and backstory based on player preferences.  
+**Every prompt change is tracked, tested, and deployed via a real MLOps pipeline.**
 
-## Project Structure
+---
+
+## 🏗️ Architecture Overview
+
+- **Prompt-as-Model:** Prompts are versioned, tested, and promoted like ML models.
+- **Pipeline:** DVC stages: generate → evaluate → package → deploy.
+- **Experiment Tracking:** Weights & Biases logs prompt versions, latency, and quality.
+- **CI/CD:** GitHub Actions runs lint/tests, DVC, and deploys to staging/prod.
+- **Monitoring:** Logs API metrics, detects drift, and triggers alerts.
+
+---
+
+## 📁 Project Structure
 
 ```
 mlops-demo/
-├── .github/                    # GitHub Actions workflows
-├── config/                     # Configuration files
-├── data/                       # Data directory
-│   ├── raw/                    # Raw data
-│   ├── processed/              # Processed data
-│   └── external/               # External data sources
-├── docs/                       # Documentation
-├── models/                     # Trained models
-├── notebooks/                  # Jupyter notebooks
-├── src/                        # Source code
-│   ├── __init__.py
-│   ├── data/                   # Data processing scripts
-│   ├── features/               # Feature engineering
-│   ├── models/                 # Model training and inference
-│   ├── visualization/          # Visualization utilities
-│   └── utils/                  # Utility functions
-├── tests/                      # Test suite
-├── .gitignore                  # Git ignore file
-├── Dockerfile                  # Docker container definition
-├── setup.py                    # Package setup
-└── README.md                   # This file
+├── .github/workflows/         # CI/CD pipelines
+├── config/                    # Config files (env, registry, etc.)
+├── data/                      # Input data (versioned by DVC)
+│   └── test_inputs.json
+├── outputs/                   # Model/prompt outputs (DVC tracked)
+├── prompts/                   # Prompt templates (versioned)
+│   └── recommend.txt
+├── src/
+│   ├── app.py                 # Flask API server
+│   ├── generate.py            # Prompt runner + W&B logging
+│   ├── evaluate.py            # Output quality checks
+│   ├── registry.py            # Promotion/rollback logic
+│   └── ...                    # Utilities, monitoring, etc.
+├── tests/                     # Pytest suite (unit, regression)
+├── dvc.yaml                   # Pipeline definition
+├── pyproject.toml             # Poetry env
+├── Dockerfile                 # Containerization
+├── .gitignore
+└── README.md
 ```
 
-## Getting Started
+---
 
-1. Clone this repository
-2. Set up a virtual environment: `python -m venv venv`
-3. Activate the virtual environment: `source venv/bin/activate` (Linux/Mac) or `venv\Scripts\activate` (Windows)
-4. Install dependencies: `pip install -r requirements.txt`
+## 🚀 Quickstart
 
-## Usage
+```bash
+poetry install
+dvc pull
+dvc repro recommend
+poetry run python src/app.py
+```
 
-Describe how to use the project, including examples of:
-- Data preparation
-- Model training
-- Model evaluation
-- Model deployment
+---
 
-## Contributing
+## 🧪 Testing
 
-Guidelines for contributing to this project.
+```bash
+pytest
+```
 
-## License
+---
 
-Specify the license for your project.
+## 🛠️ CI/CD
+
+- PR: Lint, test, DVC, W&B log, deploy to staging
+- Merge to main: Promote prompt, deploy to prod (canary)
+
+---
+
+## 📊 Monitoring
+
+- API logs to W&B/Prometheus
+- Drift detection and nightly eval
+
+---
+
+## 📜 License
+
+MIT
